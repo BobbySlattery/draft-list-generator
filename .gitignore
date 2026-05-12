@@ -1,0 +1,44 @@
+# Secrets — never commit these. Toast credentials live in GitHub Actions secrets.
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# macOS
+.DS_Store
+._*
+
+# Generated outputs (the workflow produces these fresh on every run)
+draft_list.pdf
+draft_list.html
+draft_list_*.pdf
+draft_list_*.html
+site/
+
+# Local-only previews from development
+preview*.png
+preview-*.png
+v2_*.png
+v3_*.png
+LIVE*.png
+LIVE*-*.png
+TRUE_BADGE*.png
+BADGE_*.png
+BRANDED_*.png
+BRANDED_FINAL_*.png
+CURRENT_*.png
+REAL_BADGE*.png
+badge_crop.png
+
+# Zip workaround artifacts
+*.zip
+
+# Generated badge from build_badge.py (the real one is brand/badge.png)
+brand/badge_generated.png

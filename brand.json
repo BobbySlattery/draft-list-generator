@@ -1,0 +1,37 @@
+{
+  "_comment": "Brand config for the draft list. Real Deerfield brand assets wired in: Goudy Heavyface for the headline + tap numbers, Brandon Grotesque for body text, exact hex codes from the brand guidelines.",
+
+  "colors": {
+    "header_bar":   "#C06B13",
+    "accent_orange":"#C06B13",
+    "accent_sage":  "#91C3A9",
+    "background":   "#FFFFFF",
+    "text_dark":    "#503629",
+    "text_light":   "#FFFFFF"
+  },
+
+  "header": {
+    "title":        "Draft Beer",
+    "left_badge":   "$7\nPints",
+    "right_text":   "$10 32OZ\nCROWLERS TO-GO",
+    "empty_slot_text": "New brew coming soon"
+  },
+
+  "fonts": {
+    "_comment": "Files live in brand/fonts/. The _name fields are used as CSS font-family names in the HTML and as fallback names if the file is missing.",
+    "title_font_file":   "GoudyStd-Heavyface.ttf",
+    "title_font_name":   "Goudy Heavyface",
+    "body_font_file":    "BrandonGrotesque-Regular.ttf",
+    "body_font_name":    "Brandon Grotesque",
+    "body_bold_file":    "BrandonGrotesque-Black.ttf",
+    "body_bold_name":    "Brandon Grotesque Black",
+    "badge_label_file":  "AdvertisingScriptBold.ttf",
+    "badge_label_name":  "Advertising Script Bold"
+  },
+
+  "logo": {
+    "_comment": "Image used as the badge in the header. If overlay_text is true, the configured 'left_badge' text is drawn on top of the image (used here for the $7 Pints scalloped badge).",
+    "path": "brand/badge.png",
+    "overlay_text": true
+  }
+}

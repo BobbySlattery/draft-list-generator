@@ -1,0 +1,44 @@
+{
+  "_comment": "Sample 24-tap house menu in Toast Menus API V2 shape. Brewery field is intentionally absent — this brewery only pours its own beer, so the column is dropped from the rendered output.",
+  "restaurantGuid": "00000000-0000-0000-0000-000000000000",
+  "lastUpdated": "2026-05-04T14:30:00.000Z",
+  "menus": [
+    {
+      "name": "Beverages",
+      "guid": "menu-beverages-guid",
+      "menuGroups": [
+        {
+          "name": "Draft Beer",
+          "guid": "group-draft-beer-guid",
+          "description": "On tap right now",
+          "menuItems": [
+            { "name": "Epiphany",            "guid": "i-01", "price": 8.0,  "description": "Style: West Coast IPA | ABV: 6.5% | Tap: 1 | Glass: 16oz" },
+            { "name": "Wit's End",           "guid": "i-02", "price": 7.0,  "description": "Crisp, dry, light citrus finish. Style: Belgian Wit | ABV: 5.2% | Tap: 2 | Glass: 14oz" },
+            { "name": "Substance",           "guid": "i-03", "price": 9.0,  "description": "Style: American IPA | ABV: 6.6% | Tap: 3 | Glass: 14oz" },
+            { "name": "Lunch",               "guid": "i-04", "price": 10.0, "description": "Style: IPA | ABV: 7.0% | Tap: 4 | Glass: 12oz" },
+            { "name": "Farmhouse",           "guid": "i-05", "price": 8.0,  "description": "Earthy, peppery, dry finish. Style: Saison | ABV: 6.0% | Tap: 5 | Glass: 14oz" },
+            { "name": "Portland Pale",       "guid": "i-06", "price": 7.0,  "description": "Style: Pale Ale | ABV: 5.4% | Tap: 6 | Glass: 16oz" },
+            { "name": "Island Trail",        "guid": "i-07", "price": 8.0,  "description": "Style: Pilsner | ABV: 5.0% | Tap: 7 | Glass: 16oz" },
+            { "name": "Boomtown",            "guid": "i-08", "price": 9.0,  "description": "Hazy, juicy, low bitterness. Style: NEIPA | ABV: 6.8% | Tap: 8 | Glass: 14oz" },
+            { "name": "Waves",               "guid": "i-09", "price": 9.0,  "description": "Style: DDH IPA | ABV: 7.2% | Tap: 9 | Glass: 12oz" },
+            { "name": "Daikaiju",            "guid": "i-10", "price": 11.0, "description": "Style: Imperial Stout | ABV: 9.5% | Tap: 10 | Glass: 10oz" },
+            { "name": "Helles Yeah",         "guid": "i-11", "price": 7.0,  "description": "Style: Munich Helles | ABV: 4.8% | Tap: 11 | Glass: 16oz" },
+            { "name": "Czech Yourself",      "guid": "i-12", "price": 7.0,  "description": "Style: Czech Pilsner | ABV: 4.6% | Tap: 12 | Glass: 16oz" },
+            { "name": "Smoke & Mirrors",     "guid": "i-13", "price": 9.0,  "description": "Beechwood-smoked malt. Style: Rauchbier | ABV: 5.8% | Tap: 13 | Glass: 14oz" },
+            { "name": "Jammy Devil",         "guid": "i-14", "price": 9.0,  "description": "Style: Fruited Sour | ABV: 5.4% | Tap: 14 | Glass: 12oz" },
+            { "name": "Brown Note",          "guid": "i-15", "price": 7.0,  "description": "Style: English Brown | ABV: 5.1% | Tap: 15 | Glass: 16oz" },
+            { "name": "Coffee Cake",         "guid": "i-16", "price": 8.0,  "description": "Brewed with cold-brew coffee. Style: Coffee Porter | ABV: 5.6% | Tap: 16 | Glass: 14oz" },
+            { "name": "Hop Toddy",           "guid": "i-17", "price": 9.0,  "description": "Style: Cold IPA | ABV: 6.2% | Tap: 17 | Glass: 14oz" },
+            { "name": "Trail Mix",           "guid": "i-18", "price": 9.0,  "description": "Style: Hazy Double IPA | ABV: 8.2% | Tap: 18 | Glass: 12oz" },
+            { "name": "Old Salt",            "guid": "i-19", "price": 8.0,  "description": "Style: Gose | ABV: 4.4% | Tap: 19 | Glass: 14oz" },
+            { "name": "Mash & Match",        "guid": "i-20", "price": 8.0,  "description": "Style: Amber Ale | ABV: 5.5% | Tap: 20 | Glass: 16oz" },
+            { "name": "Black & Tan Lines",   "guid": "i-21", "price": 9.0,  "description": "Style: Schwarzbier | ABV: 5.0% | Tap: 21 | Glass: 16oz" },
+            { "name": "Rye Bother",          "guid": "i-22", "price": 9.0,  "description": "Spicy, dry, big rye character. Style: Rye IPA | ABV: 6.4% | Tap: 22 | Glass: 14oz" },
+            { "name": "Heavy Pour",          "guid": "i-23", "price": 12.0, "description": "Style: Barleywine | ABV: 10.5% | Tap: 23 | Glass: 8oz" },
+            { "name": "Last Call",           "guid": "i-24", "price": 11.0, "description": "Bourbon-barrel aged 9 months. Style: BBA Stout | ABV: 11.2% | Tap: 24 | Glass: 8oz" }
+          ]
+        }
+      ]
+    }
+  ]
+}

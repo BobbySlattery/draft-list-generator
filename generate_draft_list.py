@@ -714,9 +714,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   ul.beers li {{
     display: grid;
     /* Tap column scales with the tap font size so 2-digit Goudy numbers fit
-       without overlapping the beer name. */
-    grid-template-columns: calc(var(--tap-size) * 1.9) minmax(0, 1fr) auto;
-    column-gap: 0.8vw;
+       without overlapping the beer name. Tighter gap and tap column gives the
+       beer name more horizontal room. */
+    grid-template-columns: calc(var(--tap-size) * 1.65) minmax(0, 1fr) auto;
+    column-gap: 0.5vw;
     align-items: center;
     padding: 0.35vh 0;
     border-bottom: 1px solid rgba(27,61,56,0.18);
@@ -869,13 +870,13 @@ def render_html(beers: Iterable["Beer"], out_path: Path, bar_name: str,
     rows_per_col = max(1, (len(beers) + n_cols - 1) // n_cols)
 
     # Auto-scale typography for legibility on a 1080p TV.
-    # Match the designer's proportions: tap number is ~1.6× the height of the
-    # beer name, not the previous ~2.5×. Beer name gets more vertical space.
+    # Sizes tuned so long beer names (Coast to Coast, Keep on Truckin',
+    # East Coast Hazy IPA, etc.) fit at fullscreen 16:9 without truncation.
     per_row = 82 / rows_per_col
-    tap_size  = round(min(5.8, per_row * 0.55), 1)
-    name_size = round(min(3.6, per_row * 0.36), 1)
-    sub_size  = round(min(2.4, per_row * 0.26), 1)
-    abv_size  = round(min(3.2, per_row * 0.34), 1)
+    tap_size  = round(min(5.4, per_row * 0.52), 1)
+    name_size = round(min(3.1, per_row * 0.30), 1)
+    sub_size  = round(min(2.2, per_row * 0.23), 1)
+    abv_size  = round(min(2.8, per_row * 0.30), 1)
 
     H = brand["header"]
     badge_lines = (H.get("left_badge") or "$\nPints").split("\n")

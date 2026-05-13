@@ -676,11 +676,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
-    /* The badge PNG has ~7% transparent padding at its top edge before the
-       visible sparkle. To put the VISIBLE top sparkle at the top of the bar,
-       we shift the PNG up by that amount: translateY 14% (centers in bar) − 7%
-       (compensate for PNG padding) = 7%. */
-    transform: translateY(7%);
+    /* Anchor the sage circle (which starts 13.2% into the PNG) to the top of
+       the bar. PNG sits with its top edge 3vh above the page, so the top sparkle
+       extends off the top of the viewport — matching the designer's spec where
+       the sparkle floats above the orange bar. */
+    transform: translateY(0%);
     position: relative;
     z-index: 3;
   }}

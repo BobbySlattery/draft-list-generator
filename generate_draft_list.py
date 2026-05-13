@@ -633,7 +633,18 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <title>{bar_name} — Draft Beer</title>
-<meta http-equiv="refresh" content="300">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+  // Reload the page every 60s with a cache-busting query string so the TV
+  // always shows the latest published version, never a stale cached copy.
+  setTimeout(function() {{
+    var u = new URL(window.location.href);
+    u.searchParams.set('t', Date.now());
+    window.location.replace(u.toString());
+  }}, 60000);
+</script>
 <style>
   {font_face_rules}
   :root {{

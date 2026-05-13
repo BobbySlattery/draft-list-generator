@@ -655,6 +655,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     font-family: '{body_font_name}', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 100%; overflow: hidden;
   }}
+  body {{
+    /* Tiny top margin so the badge's top sparkle can extend slightly above the
+       orange bar without clipping (matches designer spec) */
+    padding-top: 2vh;
+  }}
   .header-bar {{
     background: var(--header-bar);
     height: 16vh;
@@ -668,22 +673,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     z-index: 2;
   }}
   .badge {{
-    /* Badge is taller than the orange bar so it "breaks out" past the bottom edge.
-       Bar is 16vh; badge is ~22vh, so it protrudes ~6vh past the bar bottom. */
+    /* Badge is taller than the orange bar so it "breaks out" past both edges,
+       like the designer's spec — top sparkle pokes above the bar into the white
+       margin, sage bottom hangs into the body below the bar. */
     width: 22vh; height: 22vh;
     {badge_bg_css}
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
-    /* Align top of badge roughly with top of bar, so it mostly extends downward.
-       The bar grid cell would otherwise center it (giving negative top); this pushes
-       it back down to start at the bar's top edge. */
-    transform: translateY(14%);
+    /* Small downward nudge keeps the top sparkle inside the body padding-top */
+    transform: translateY(6%);
     position: relative;
     z-index: 3;
   }}
-  .badge .price {{ font-family: '{title_font_name}', Georgia, serif; font-size: 5vh; }}
-  .badge .label {{ font-family: '{badge_label_font_name}', cursive; font-size: 3vh; margin-top: 0.2vh; letter-spacing: 0.02em; }}
+  .badge .price {{ font-family: '{title_font_name}', Georgia, serif; font-size: 7vh; }}
+  .badge .label {{ font-family: '{badge_label_font_name}', cursive; font-size: 4vh; margin-top: 0.4vh; letter-spacing: 0.02em; }}
   .header-bar .title {{
     font-family: '{title_font_name}', Georgia, serif;
     font-size: 11vh;
@@ -699,9 +703,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     text-transform: uppercase;
   }}
   .grid {{
-    /* Top padding is large enough to clear the badge that hangs past the orange bar */
-    padding: 6vh 3vw 1vh 3vw;
-    height: 83vh;
+    /* Top padding clears the badge that hangs past the orange bar */
+    padding: 4vh 3vw 1vh 3vw;
+    height: 82vh;
     display: grid;
     grid-template-columns: {grid_cols};
     column-gap: 3vw;

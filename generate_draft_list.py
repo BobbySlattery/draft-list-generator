@@ -655,11 +655,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     font-family: '{body_font_name}', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 100%; overflow: hidden;
   }}
-  body {{
-    /* Tiny top margin so the badge's top sparkle can extend slightly above the
-       orange bar without clipping (matches designer spec) */
-    padding-top: 2vh;
-  }}
   .header-bar {{
     background: var(--header-bar);
     height: 16vh;
@@ -681,8 +676,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
-    /* Small downward nudge keeps the top sparkle inside the body padding-top */
-    transform: translateY(6%);
+    /* Shift down enough that the PNG top (where the top sparkle sits) aligns
+       exactly with the top of the orange bar (= top of page). With a 22vh badge
+       in a 16vh bar centered cell, the default top is -3vh; translating down
+       ~14% of badge height brings the top edge to 0. */
+    transform: translateY(14%);
     position: relative;
     z-index: 3;
   }}
@@ -704,7 +702,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }}
   .grid {{
     /* Top padding clears the badge that hangs past the orange bar */
-    padding: 4vh 3vw 1vh 3vw;
+    padding: 7vh 3vw 1vh 3vw;
     height: 82vh;
     display: grid;
     grid-template-columns: {grid_cols};

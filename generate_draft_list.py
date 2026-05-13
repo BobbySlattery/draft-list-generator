@@ -668,14 +668,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     z-index: 2;
   }}
   .badge {{
-    width: 20vh; height: 20vh;
+    /* Badge is taller than the orange bar so it "breaks out" past the bottom edge.
+       Bar is 16vh; badge is ~22vh, so it protrudes ~6vh past the bar bottom. */
+    width: 22vh; height: 22vh;
     {badge_bg_css}
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
-    /* Shift down so the bottom edge of the badge extends past the orange bar,
-       like a sticker hanging halfway off the shelf. */
-    transform: translateY(15%);
+    /* Align top of badge roughly with top of bar, so it mostly extends downward.
+       The bar grid cell would otherwise center it (giving negative top); this pushes
+       it back down to start at the bar's top edge. */
+    transform: translateY(14%);
     position: relative;
     z-index: 3;
   }}
@@ -696,7 +699,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     text-transform: uppercase;
   }}
   .grid {{
-    padding: 2vh 3vw 1vh 3vw;
+    /* Top padding is large enough to clear the badge that hangs past the orange bar */
+    padding: 6vh 3vw 1vh 3vw;
     height: 83vh;
     display: grid;
     grid-template-columns: {grid_cols};

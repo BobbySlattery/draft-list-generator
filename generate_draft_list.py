@@ -657,19 +657,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }}
   .header-bar {{
     background: var(--header-bar);
-    height: 18vh;
+    height: 16vh;
     padding: 0 3vw;
     display: grid;
     grid-template-columns: 14vw 1fr 22vw;
     align-items: center;
     color: var(--light);
+    overflow: visible;  /* let the badge hang past the bottom edge */
+    position: relative;
+    z-index: 2;
   }}
   .badge {{
-    width: 16vh; height: 16vh;
+    width: 20vh; height: 20vh;
     {badge_bg_css}
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
+    /* Shift down so the bottom edge of the badge extends past the orange bar,
+       like a sticker hanging halfway off the shelf. */
+    transform: translateY(15%);
+    position: relative;
+    z-index: 3;
   }}
   .badge .price {{ font-family: '{title_font_name}', Georgia, serif; font-size: 5vh; }}
   .badge .label {{ font-family: '{badge_label_font_name}', cursive; font-size: 3vh; margin-top: 0.2vh; letter-spacing: 0.02em; }}
@@ -688,8 +696,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     text-transform: uppercase;
   }}
   .grid {{
-    padding: 3vh 3vw 1vh 3vw;
-    height: 82vh;
+    padding: 2vh 3vw 1vh 3vw;
+    height: 83vh;
     display: grid;
     grid-template-columns: {grid_cols};
     column-gap: 3vw;
@@ -704,7 +712,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     grid-template-columns: calc(var(--tap-size) * 1.9) minmax(0, 1fr) auto;
     column-gap: 0.8vw;
     align-items: center;
-    padding: 0.6vh 0;
+    padding: 0.35vh 0;
     border-bottom: 1px solid rgba(27,61,56,0.18);
     min-width: 0;  /* allow ellipsis to work inside grid */
   }}

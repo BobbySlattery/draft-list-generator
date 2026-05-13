@@ -676,11 +676,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--light);
     line-height: 1;
-    /* Shift down enough that the PNG top (where the top sparkle sits) aligns
-       exactly with the top of the orange bar (= top of page). With a 22vh badge
-       in a 16vh bar centered cell, the default top is -3vh; translating down
-       ~14% of badge height brings the top edge to 0. */
-    transform: translateY(14%);
+    /* The badge PNG has ~7% transparent padding at its top edge before the
+       visible sparkle. To put the VISIBLE top sparkle at the top of the bar,
+       we shift the PNG up by that amount: translateY 14% (centers in bar) − 7%
+       (compensate for PNG padding) = 7%. */
+    transform: translateY(7%);
     position: relative;
     z-index: 3;
   }}
@@ -702,7 +702,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   }}
   .grid {{
     /* Top padding clears the badge that hangs past the orange bar */
-    padding: 7vh 3vw 1vh 3vw;
+    padding: 5vh 3vw 1vh 3vw;
     height: 82vh;
     display: grid;
     grid-template-columns: {grid_cols};

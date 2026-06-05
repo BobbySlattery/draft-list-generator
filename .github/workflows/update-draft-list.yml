@@ -61,7 +61,7 @@ jobs:
           mkdir -p site/wooster-pike
           python generate_draft_list.py --output-dir site/wooster-pike
 
-      - name: Generate Chillicothe draft list
+      - name: Generate Chillicothe draft list continue-on-error: true
         env:
           TOAST_CLIENT_ID: ${{ secrets.TOAST_CLIENT_ID }}
           TOAST_CLIENT_SECRET: ${{ secrets.TOAST_CLIENT_SECRET }}

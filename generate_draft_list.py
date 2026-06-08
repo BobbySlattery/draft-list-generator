@@ -285,8 +285,9 @@ def fill_taps(beers: list[Beer], total_slots: int) -> list[Beer]:
             filled.append(by_tap[n])
         else:
             filled.append(Beer(name="", price=0.0, tap=str(n)))
-    # Append any leftover beers that didn't have a numeric tap in [1, total_slots]
-    filled.extend(extras)
+    # Anything without a tap number in [1, total_slots] is silently dropped.
+    # Toast may contain cans/upcoming/removed items mixed into the same menu
+    # group — we only display the numbered tap slots the user explicitly set.
     return filled
 
 

@@ -963,6 +963,177 @@ def render_html(beers: Iterable["Beer"], out_path: Path, bar_name: str,
 # ---------- Main ------------------------------------------------------------
 
 
+# ---------- JSON output (for website / API consumers) ----------------------
+
+
+def render_json(beers: Iterable["Beer"], out_path: Path, bar_name: str) -> None:
+    """Write a clean JSON file with the current beer list.
+
+    Designed for our Vercel-hosted brewery website to fetch and render.
+    GitHub Pages serves with CORS allowed, so client-side fetch() works
+    from any origin.
+
+    Schema is stable — if you change it, also notify the website devs.
+    """
+    beers = list(beers)
+    payload = {
+        "location": bar_name,
+        "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "tap_count": len(beers),
+        "beers": [
+            {
+                "tap":   b.tap,
+                "name":  b.name,
+                "style": b.style,
+                "abv":   b.abv,
+                "price": b.price,
+                "note":  b.note,
+                "empty": not b.name,
+            }
+            for b in beers
+        ],
+    }
+    out_path.write_text(json.dumps(payload, indent=2))
+
+
+# ---------- Embeddable lite HTML (for the brewery website) -----------------
+
+EMBED_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{bar_name} — On Tap</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Refresh every 60s with a cache-buster so the embed stays current
+  setTimeout(function() {{
+    var u = new URL(window.location.href);
+    u.searchParams.set('t', Date.now());
+    window.location.replace(u.toString());
+  }}, 60000);
+</script>
+<style>
+  {font_face_rules}
+  :root {{
+    --orange: {c_orange};
+    --sage:   {c_sage};
+    --text:   {c_text};
+    --bg:     {c_bg};
+  }}
+  * {{ box-sizing: border-box; }}
+  html, body {{
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: '{body_font_name}', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }}
+  .embed-wrap {{
+    padding: 1.5rem 1.25rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }}
+  ul.beers {{
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }}
+  @media (min-width: 700px)  {{ ul.beers {{ grid-template-columns: 1fr 1fr; column-gap: 2.5rem; }} }}
+  @media (min-width: 1100px) {{ ul.beers {{ grid-template-columns: 1fr 1fr 1fr; column-gap: 2.5rem; }} }}
+  ul.beers li {{
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    column-gap: 0.75rem;
+    align-items: center;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(80,54,41,0.18);
+    min-width: 0;
+  }}
+  .tap {{
+    font-family: '{title_font_name}', Georgia, serif;
+    font-size: 1.5rem; line-height: 1;
+    color: var(--sage); font-weight: normal;
+    text-align: left;
+  }}
+  .tap.empty {{ opacity: 0.45; }}
+  .beer {{ min-width: 0; overflow: hidden; }}
+  .beer .name {{
+    color: var(--orange);
+    font-weight: 800;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }}
+  .beer .name.empty {{ color: var(--orange); opacity: 0.55; font-weight: 600; text-transform: none; }}
+  .beer .substyle {{
+    color: var(--text);
+    font-size: 0.85rem;
+    margin-top: 0.15rem;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.85;
+  }}
+  .abv {{
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }}
+  .updated {{
+    font-size: 0.75rem; color: var(--text); opacity: 0.5;
+    margin-top: 1.5rem; text-align: center; font-style: italic;
+  }}
+</style>
+</head>
+<body>
+<div class="embed-wrap">
+{body}
+<div class="updated">Pulled live from Toast · {timestamp}</div>
+</div>
+</body>
+</html>
+"""
+
+
+def render_embed_html(beers: Iterable["Beer"], out_path: Path, bar_name: str,
+                      brand: dict | None = None) -> None:
+    """Write a brand-styled, iframe-friendly list of the current draft beers.
+
+    No header bar, no badge — just a clean, responsive list designed to drop
+    inside the brewery website page that shows pictures of each location.
+    Single column on narrow viewports, 2-3 columns on wider ones.
+    """
+    beers = list(beers)
+    if brand is None:
+        brand = load_brand(Path(__file__).resolve().parent)
+    here = Path(__file__).resolve().parent
+
+    empty_slot_text = (brand["header"].get("empty_slot_text") or "").strip()
+    rows = "".join(_render_beer_li(b, empty_slot_text) for b in beers)
+    body = f'<ul class="beers">{rows}</ul>'
+
+    F = brand["fonts"]
+    out_path.write_text(EMBED_TEMPLATE.format(
+        font_face_rules=_build_font_face_rules(brand, here),
+        bar_name=html_escape(bar_name),
+        c_orange=brand["colors"]["accent_orange"],
+        c_sage=brand["colors"]["accent_sage"],
+        c_text=brand["colors"]["text_dark"],
+        c_bg=brand["colors"]["background"],
+        title_font_name=F.get("title_font_name") or "Times-Bold",
+        body_font_name=F.get("body_font_name") or "Helvetica",
+        body=body,
+        timestamp=datetime.datetime.now().strftime("%b %-d, %Y · %-I:%M %p"),
+    ))
+
+
 def main() -> int:
     here = Path(__file__).resolve().parent
     load_dotenv(here / ".env")
@@ -1042,6 +1213,14 @@ def main() -> int:
         html_path = out_dir / "draft_list.html"
         render_html(beers, html_path, bar_name, brand=brand)
         print(f"  Wrote {html_path}")
+        # Website-facing outputs: JSON for the Vercel devs to fetch+render,
+        # and a brand-styled embeddable list they can iframe instead.
+        embed_path = out_dir / "embed.html"
+        render_embed_html(beers, embed_path, bar_name, brand=brand)
+        print(f"  Wrote {embed_path}")
+        json_path = out_dir / "beers.json"
+        render_json(beers, json_path, bar_name)
+        print(f"  Wrote {json_path}")
 
     return 0
 

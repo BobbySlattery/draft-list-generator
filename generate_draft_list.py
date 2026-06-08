@@ -35,6 +35,10 @@ from typing import Iterable
 DEFAULTS = {
     "TOAST_HOST": "https://ws-api.toasttab.com",
     "DRAFT_GROUP_NAME": "Draft Beer",
+    # If set, only look for the group inside this parent menu (case-insensitive).
+    # Useful when more than one menu in the restaurant contains a "Draft Beer"
+    # group — e.g., Chillicothe has it under both "Beer" and elsewhere.
+    "DRAFT_MENU_NAME":  "",
     "BAR_NAME": "On Tap",
     # If set (e.g., "24"), always render this many tap slots even when some are
     # missing from Toast — empty slots show the tap number with no beer info, so
@@ -223,12 +227,23 @@ def split_abv_from_name(name: str) -> tuple[str, str]:
     return "", name
 
 
-def extract_drafts(menu_payload: dict, group_name: str) -> list[Beer]:
-    target = group_name.strip().lower()
+def extract_drafts(menu_payload: dict, group_name: str,
+                   menu_name: str | None = None) -> list[Beer]:
+    """Find a group by name and return the beers inside it.
+
+    If `menu_name` is provided, only groups inside that parent menu are
+    considered — useful when multiple menus contain a group with the same
+    name (e.g., a "Draft Beer" group both in the "Beer" menu and in the
+    "Online Menu and Takeout" menu's "32 oz Crowlers of Draft Beer").
+    """
+    target_group = group_name.strip().lower()
+    target_menu = menu_name.strip().lower() if menu_name else None
     beers: list[Beer] = []
     for menu in menu_payload.get("menus", []):
+        if target_menu and menu.get("name", "").strip().lower() != target_menu:
+            continue
         for group in menu.get("menuGroups", []):
-            if group.get("name", "").strip().lower() != target:
+            if group.get("name", "").strip().lower() != target_group:
                 continue
             for item in group.get("menuItems", []):
                 meta = parse_description(item.get("description", ""))
@@ -1163,6 +1178,8 @@ def main() -> int:
     p.add_argument("--pdf-only", action="store_true")
     p.add_argument("--html-only", action="store_true")
     p.add_argument("--group-name", default=None, help="Override DRAFT_GROUP_NAME for this run.")
+    p.add_argument("--menu-name", default=None,
+                   help="Override DRAFT_MENU_NAME — only pull from this parent menu.")
     p.add_argument("--list-groups", action="store_true",
                    help="Diagnostic: pull menus from Toast and print every menu group + item count, then exit.")
     p.add_argument("--save-payload", default=None,
@@ -1204,9 +1221,13 @@ def main() -> int:
         return 0
 
     group_name = args.group_name or cfg("DRAFT_GROUP_NAME")
+    menu_name = args.menu_name or cfg("DRAFT_MENU_NAME") or None
     bar_name = cfg("BAR_NAME")
-    beers = extract_drafts(payload, group_name)
-    print(f"Found {len(beers)} beer(s) in '{group_name}' group.")
+    beers = extract_drafts(payload, group_name, menu_name=menu_name)
+    scope = f"'{group_name}' group"
+    if menu_name:
+        scope = f"'{menu_name}' menu / {scope}"
+    print(f"Found {len(beers)} beer(s) in {scope}.")
 
     # If EXPECTED_TAP_COUNT is set, pad to that many slots so the grid is
     # always the configured size (e.g., 24 = 3 cols × 8 rows). Empty taps

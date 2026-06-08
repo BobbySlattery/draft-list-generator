@@ -1033,6 +1033,14 @@ EMBED_TEMPLATE = """<!DOCTYPE html>
     max-width: 1200px;
     margin: 0 auto;
   }}
+  .embed-title {{
+    font-family: '{title_font_name}', Georgia, serif;
+    color: var(--orange);
+    font-size: 2.6rem;
+    line-height: 1;
+    text-align: center;
+    margin: 0 0 1.5rem 0;
+  }}
   ul.beers {{
     list-style: none; margin: 0; padding: 0;
     display: grid;
@@ -1095,6 +1103,7 @@ EMBED_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
 <div class="embed-wrap">
+<h2 class="embed-title">{location_short}</h2>
 {body}
 <div class="updated">Pulled live from Toast · {timestamp}</div>
 </div>
@@ -1120,10 +1129,19 @@ def render_embed_html(beers: Iterable["Beer"], out_path: Path, bar_name: str,
     rows = "".join(_render_beer_li(b, empty_slot_text) for b in beers)
     body = f'<ul class="beers">{rows}</ul>'
 
+    # Show just the location-specific part in the embed title.
+    # e.g. "Fifty West - Deerfield" → "Deerfield".
+    location_short = bar_name
+    for sep in (" - ", " – ", "- ", "–"):
+        if sep in bar_name:
+            location_short = bar_name.split(sep, 1)[-1].strip()
+            break
+
     F = brand["fonts"]
     out_path.write_text(EMBED_TEMPLATE.format(
         font_face_rules=_build_font_face_rules(brand, here),
         bar_name=html_escape(bar_name),
+        location_short=html_escape(location_short),
         c_orange=brand["colors"]["accent_orange"],
         c_sage=brand["colors"]["accent_sage"],
         c_text=brand["colors"]["text_dark"],

@@ -763,7 +763,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     color: var(--sage);
   }}
   .tap.empty {{ opacity: 0.45; }}
-  .name.empty {{ opacity: 0.55; font-weight: 700; }}
+  /* Placeholder for empty taps — small, italic, faded so it reads as
+     "this tap is empty" instead of competing visually with real beer names. */
+  .beer .name.empty {{
+    text-transform: none;
+    font-weight: 400;
+    font-style: italic;
+    font-size: var(--sub-size);
+    color: var(--orange);
+    opacity: 0.45;
+    letter-spacing: 0;
+  }}
   .beer .name {{
     color: var(--orange);
     font-weight: 800;

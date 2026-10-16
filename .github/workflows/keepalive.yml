@@ -1,0 +1,36 @@
+name: Keepalive
+
+# Why this exists:
+# GitHub automatically disables scheduled workflows in PUBLIC repositories after
+# 60 days with no repository activity. Workflow RUNS do not count as activity --
+# only commits do. "Update Draft List" runs every 15 minutes but never commits
+# anything (it publishes to GitHub Pages), so the repo looks abandoned and GitHub
+# schedules it for shutdown.
+#
+# This job makes one tiny commit every Monday, which resets that 60-day clock --
+# for this workflow and for Update Draft List. It keeps itself alive too.
+
+on:
+  schedule:
+    - cron: "17 13 * * 1" # Mondays 13:17 UTC (~9:17am ET), off-the-hour on purpose
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update heartbeat timestamp
+        run: date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/keepalive.txt
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/keepalive.txt
+          git diff --staged --quiet || git commit -m "chore: keepalive heartbeat [skip ci]"
+          git push

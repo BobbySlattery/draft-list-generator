@@ -766,14 +766,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   /* Placeholder for empty taps — small, italic, faded so it reads as
      "this tap is empty" instead of competing visually with real beer names. */
   .beer .name.empty {{
+    /* Outer span stays at --name-size so its line box is exactly as tall as a
+       real beer name, keeping empty rows aligned with the other columns.
+       The inner <i> carries the small italic appearance. */
     text-transform: none;
     font-weight: 400;
-    font-style: italic;
-    font-size: var(--sub-size);
+    font-size: var(--name-size);
     color: var(--orange);
     opacity: 0.45;
     letter-spacing: 0;
   }}
+  .beer .name.empty i {{ font-size: var(--sub-size); font-style: italic; }}
   .beer .name {{
     color: var(--orange);
     font-weight: 800;
@@ -801,7 +804,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     text-align: right;
     font-weight: 600;
   }}
-  .empty {{
+  /* Full-page "no drafts configured" message. MUST stay scoped to the div:
+     a bare .empty selector also matches <span class="tap empty"> and
+     <span class="name empty"> in the per-row placeholder, which inherited the
+     6vh padding, centring and 3vh font and wrecked those rows. */
+  div.empty {{
     color: var(--text); font-style: italic; padding: 6vh; text-align: center; font-size: 3vh;
   }}
 </style>
@@ -829,11 +836,13 @@ def _render_beer_li(b: "Beer", empty_slot_text: str = "") -> str:
     empty_slot = not b.name
     if empty_slot:
         tap_html  = f'<span class="tap empty">{html_escape(b.tap or "—")}</span>'
-        name_html = f'<span class="name empty">{html_escape(empty_slot_text)}</span>' if empty_slot_text else ""
+        name_html = f'<span class="name empty"><i>{html_escape(empty_slot_text)}</i></span>' if empty_slot_text else ""
         return (
             '<li class="empty-row">'
             f'{tap_html}'
-            f'<span class="beer">{name_html}</span>'
+            # Blank substyle line keeps the empty row the same height as a real
+            # two-line row, so rows stay aligned across the three columns.
+            f'<span class="beer">{name_html}<span class="substyle">&nbsp;</span></span>'
             '<span class="abv"></span>'
             '</li>'
         )
